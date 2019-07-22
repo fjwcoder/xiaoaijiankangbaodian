@@ -1,0 +1,135 @@
+<div class="box">
+  <div class="box-header">
+    <span style="color: red;">注意：</span>
+    通知到宝妈后，请点击“通知”按钮更改状态。<br>
+    宝妈母乳检测后，请点击“检测”按钮更改状态
+    <!-- <ob_link><a class="btn" href="{:url('checkAdd')}"><i class="fa fa-plus"></i> 新 增</a></ob_link> -->
+    
+    <!-- <div class="box-tools">
+        <div class="input-group input-group-sm search-form">
+            <input name="search_data" class="pull-right search-input" value="{:input('search_data')}" placeholder="支持标题|描述" type="text">
+            <div class="input-group-btn">
+              <button type="button" id="search" url="{:url('checklist')}" class="btn btn-default"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </div> -->
+    <br/>
+  </div>
+  <style>
+    .table thead tr th, .table tbody tr td{text-align: center;}
+    label{cursor: pointer;}
+  </style>
+  <div class="box-body table-responsive" style="overflow: scroll">
+    <table  class="table table-bordered table-hover" style="width: 2000px!important; max-width: 2000px!important;">
+      <thead>
+      <tr>
+          <!-- <th class="checkbox-select-all">
+              <label>
+                <input class="flat-grey js-checkbox-all" type="checkbox">
+              </label>
+          </th> -->
+          <th style="width: 150px;">操作</th>
+          <th style="width: 100px;">宝妈</th>
+          <th style="width: 50px;">年龄</th>
+          <th style="width: 120px;">怀孕次数（G）/ 分娩次数（P）</th>
+          <th style="width: 100px;">产后时间</th>
+          <th style="width: 100px;">身份证</th>
+          <th style="width: 100px;">手机号</th>
+          <th style="width: 100px;">分娩日期</th>
+          <th style="width: 100px;">胎龄</th>
+          <th style="width: 100px;">宝宝</th>
+          <th style="width: 100px;">宝宝性别/民族</th>
+          <th style="width: 90px;">出生身高/现身高(cm)</th>
+          <th style="width: 90px;">出生体重/现体重(kg)</th>
+          <th style="width: 90px;">出生头围/现头围(cm)</th>
+          <th style="width: 200px;">地址</th>
+          <!-- <th style="width: 200px;">操作</th> -->
+      </tr>
+      </thead>
+      
+      {notempty name='list'}
+        <tbody>
+            {volist name='list' id='vo'}
+                <tr id="tbody-tr-{$vo.id}"
+                  {switch name="$vo.step"}
+                    {case value="1"}class=""{/case}
+                    {case value="2"}class="warning"{/case}
+                    {case value="3"}class="success"{/case}
+                    {default}class=""
+                  {/switch}>
+
+                  <td class="">
+
+                      <label onclick="changeStep('{$vo.id}', 2, this);" {if $vo.step > 1}style="display: none;"{/if}>通知</label>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <label onclick="changeStep('{$vo.id}', 3, this);" {if $vo.step > 2}style="display: none;"{/if}>检测</label>
+
+                  </td>
+
+                  <td>{$vo.mather_name}</td>
+                  <td>{$vo.mather_age}</td>
+                  <td>{$vo.g}/{$vo.p}</td>
+                  <td>{$vo.after_birth_month}月{$vo.after_birth_day}天</td>
+                  <td>{$vo.id_card}</td>
+                  <td>{$vo.mobile}</td>
+                  <td>{$vo.baby_birthday}</td>
+                  <td>{$vo.gestational_age_week}周{$vo.gestational_age_day}天</td>
+                  <td>{$vo.baby_name}</td>
+                  
+                  <td>
+                    {switch name="$vo.baby_sex"}
+                      {case value="1"}男{/case}
+                      {case value="2"}女{/case}
+                      {default}未知 
+                    {/switch}
+                    /{$vo.baby_nation}
+                  </td>
+                  <td>{$vo.baby_birth_height}/{$vo.baby_now_height}</td>
+                  <td>{$vo.baby_birth_weight}/{$vo.baby_now_weight}</td>
+                  <td>{$vo.baby_birth_head}/{$vo.baby_now_head}</td>
+                  <td>{$vo.address}</td>
+                  
+                </tr>
+            {/volist}
+        </tbody>
+        {else/}
+        <tbody><tr class="odd"><td colspan="8" class="text-center" valign="top">{:config('empty_list_describe')}</td></tr></tbody>
+      {/notempty}
+    </table>
+      
+    {include file="layout/batch_btn_group"/}
+  </div>
+  <div class="box-footer clearfix text-center">
+      {$list->render()}
+  </div>
+</div>
+<script>
+    function changeStep(id, next_step, doc){
+      var cla = '';
+      $.ajax({
+        method: 'POST',
+        url: '/admin.php/Breast/changeStep',
+        data: {id:id, step: next_step},
+        success: function(res){
+          if(res){
+            // 清空类
+            $('#tbody-tr-'+id).removeClass('warning').removeClass('active').removeClass('success');
+            if(next_step == 2){
+              $('#tbody-tr-'+id).addClass('warning');
+            }
+            if(next_step == 3){
+              $('#tbody-tr-'+id).addClass('success');
+            }
+            $(doc).css('display', 'none');
+          }
+        },
+        error: function(e){
+          alert('状态修改失败，请重试');
+        }
+      });
+    }
+
+
+
+    
+</script>

@@ -1,0 +1,90 @@
+<style>
+
+    .pregnant-addinfo-container{
+        width: 80%;
+    margin: -30px 5% 0 5%;
+    padding: 20px;     margin-top: 50px;
+    }
+    .pregnant-addinfo-container .layui-form-item{
+        margin: 10px 0;
+    }
+    .layui-form-select dl dd.layui-this, .layui-laydate .layui-this{
+        background-color: #FFC0CB!important;
+    color: #fff;
+    }
+    input.layui-input{
+        border: 0;
+    border-bottom: 1px solid #eee!important;
+    color: #666;
+    }
+    .layui-form-radio>i:hover, .layui-form-radioed>i{
+        color: #FFC0CB;
+    }
+</style>
+
+<div class="layui-card pregnant-addinfo-container" >
+    <div class="layui-card-header" style="text-align: center;">宝宝信息</div>
+    <form class="layui-form" action="/kids/editKidsInfo">
+        <input name="openid" type="hidden" value="{$openid}" >
+        <input name="id" type="hidden" value="{$kids.id}" >
+
+        <div class="layui-form-item">
+            <input type="text" name="real_name" required lay-verify="required" value="{$kids.real_name | default=''}" placeholder="请输入宝宝姓名"  autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+                <label class="layui-form-label">宝宝性别</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="sex" value="1" {if $kids.sex eq 1}checked{/if} title="男">
+                    <input type="radio" name="sex" value="2" {if $kids.sex eq 2}checked{/if} title="女">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                    <input type="text" name="hospital" required lay-verify="required" value="{$kids.hospital | default=''}" placeholder="宝宝出生医院"  autocomplete="off" class="layui-input">
+                </div>
+        <div  class="layui-form-item">
+                <input type="text" placeholder="请输入出生日期" required value="{$kids.birthday | default=''}" class="layui-input" name="birthday" id="birthday">
+            </div>
+            <div class="layui-form-item"> 
+
+                    <select name="allergy" required lay-verify="required">
+                        <option value="1" {if $kids.allergy eq 1}selected{/if}>有过敏史</option>
+                        <option value="2" {if $kids.allergy eq 2}selected{/if}>无过敏史</option>
+                    </select>
+    
+                </div>
+        
+        
+        <div class="layui-form-item">   
+                <input type="text" name="mobile" required  lay-verify="required" value="{$kids.mobile | default=''}" placeholder="请输入联系手机号" autocomplete="off"  class="layui-input">  
+            </div>
+        <style>
+            .save-btn{background: #FFC0CB!important; border-color: #FFC0CB!important;
+                color: #fff; border-radius: 30px; width: 40%; margin: 0 30% -50px 30%;}
+        </style>
+        <button type="submit" class="layui-btn save-btn layui-btn-primary">
+            保  存
+        </button>
+    </form>
+
+    
+</div>
+
+<script>
+
+        //注意：导航 依赖 element 模块，否则无法进行功能性操作
+        layui.use(['form', 'layer', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,laydate = layui.laydate
+            
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#birthday' //指定元素
+        });
+    
+
+            form.render();
+        });
+    
+
+</script>

@@ -1,0 +1,40 @@
+<style>
+    .this-page-title{
+        color: #ffc0cb;
+        font-size: 1.1rem;
+    }
+    .layui-table thead tr th, .layui-table tbody tr td{
+        text-align: center;
+    }
+    .layui-table td, .layui-table th {
+        padding: 9px 5px;
+    }
+</style>
+<div class="layui-card">
+    <div class="layui-card-header this-page-title t_c">
+            <a href="/pregnant/breastmilkcheck?openid={$openid}">
+                <span class="layui-icon layui-icon-return" style="float: left;  margin-left: 15px;color: #ffc0cb;"></span>
+            </a>
+
+        母乳检测记录
+    </div>
+    <div class="layui-card-body">
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th>宝妈</th><th>宝宝</th><th>时间</th>
+                </tr> 
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+                <tr>
+                    <td>{$vo.mather_name}</td>
+                    <td>{$vo.baby_name}</td>
+                    <td>{$vo.create_time}</td>
+                </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+    </div>
+</div>

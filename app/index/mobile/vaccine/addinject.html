@@ -1,0 +1,102 @@
+<style>
+
+        .pregnant-addinfo-container{
+            width: 80%;
+        margin: -30px 5% 0 5%;
+        padding: 20px;     margin-top: 50px;
+        }
+        .pregnant-addinfo-container .layui-form-item{
+            margin: 10px 0;
+        }
+        .layui-form-select dl dd.layui-this, .layui-laydate .layui-this{
+            background-color: #FFC0CB!important;
+        color: #fff;
+        }
+        /* #FFC0CB */
+        input.layui-input{
+            border: 0;
+        border-bottom: 1px solid #eee!important;
+        color: #666;
+        }
+    </style>
+    
+    <div class="layui-card pregnant-addinfo-container" >
+        <div class="layui-card-header" style="text-align: center; color: #FFC0CB;">添加接种日记</div>
+        <form class="layui-form" action="/vaccine/saveinjectinfo">
+            <input name="openid" type="hidden" value="{$openid}" >
+            <input name="kids_id" type="hidden" value="{$kids.id}" >
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left; color: #FFC0CB;">宝宝信息</label>
+            </div>
+
+            <div class="layui-form-item">
+                <input type="text" name="real_name" required lay-verify="required" placeholder="请输入宝宝姓名" value="{$kids.real_name | default=''}"  autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item"> 
+    
+                    <select name="sex" required lay-verify="required">
+                        <option value="1" {if $kids.sex eq 1}selected{/if}>男</option>
+                        <option value="2" {if $kids.sex eq 2}selected{/if}>女</option>
+                    </select>
+    
+                </div>
+            <div  class="layui-form-item">
+                    <input type="text" placeholder="请输入出生日期" value="{$kids.birthday | default=''}" required class="layui-input" name="birthday" id="birthday">
+                </div>
+            <div class="layui-form-item"> 
+    
+                <select name="allergy" required lay-verify="required">
+                    <option value="1" {if $kids.sex eq 1}selected{/if}>有过敏史</option>
+                    <option value="2" {if $kids.sex eq 1}selected{/if}>无过敏史</option>
+                </select>
+
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left; color: #FFC0CB;">接种信息</label>
+            </div>
+            <div class="layui-form-item">
+                <input type="text" name="vaccine_name" required lay-verify="required" placeholder="请输入接种疫苗名称"   autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <input type="text" placeholder="请输入接种日期" required class="layui-input" name="inject_date" id="inject_date">
+            </div>
+            <div class="layui-form-item">
+                    <textarea name="reaction" placeholder="如有不良反应，请在此记录" class="layui-textarea"></textarea>
+                </div>
+            <style>
+                .save-btn{background: #FFC0CB!important; border-color: #FFC0CB!important;
+                    color: #fff; border-radius: 30px; width: 40%; margin: 0 30% -50px 30%;}
+            </style>
+            <button type="submit" class="layui-btn save-btn layui-btn-primary">
+                保  存
+            </button>
+        </form>
+    
+        
+    </div>
+    
+    <script>
+    
+            //注意：导航 依赖 element 模块，否则无法进行功能性操作
+            layui.use(['form', 'layer', 'laydate'], function(){
+            var form = layui.form
+                ,layer = layui.layer
+                ,laydate = layui.laydate
+                
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#birthday' //指定元素
+            });
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#inject_date' //指定元素
+            });
+        
+    
+                form.render();
+            });
+        
+    
+    </script>

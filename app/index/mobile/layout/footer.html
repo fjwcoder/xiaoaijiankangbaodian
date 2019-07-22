@@ -1,0 +1,97 @@
+
+<style>
+    div.mask{position: fixed; background: rgba(0,0,0,.5); z-index: 10; display: none;}
+    div#top-mask{top: 0; left: 0; right: 0; height: 0;}
+    div#left-mask{top: 0; left: 0; bottom: 0; width: 0;}
+    div#right-mask{top: 0; right: 0; bottom: 0; width: 0;}
+    div#bottom-mask{bottom: 0; left: 0; right: 0; height: 0;}
+
+</style>
+<div id="top-mask" class="mask"  onclick="hideSlidePanel('bottom')"></div>
+<div id="left-mask" class="mask"  onclick="hideSlidePanel('right')"></div>
+<div id="right-mask" class="mask" onclick="hideSlidePanel('left')"></div>
+<div id="bottom-mask" class="mask"  onclick="hideSlidePanel('top')"></div>
+<!-- <footer class="footer">
+  <div class="container">
+      <p> 本站由 <strong><a href="http://www.onebase.org" target="_blank">FJWCODER</a></strong> 鼎力支持</p>
+  </div>
+</footer> -->
+
+<script type="text/javascript" src="__STATIC__/module/index/js/footer.js"></script>
+
+{:hook('hook_view_index')}
+<script>
+    // 公共方法
+    function showSlidePanel(position, percent){
+        var panel = $('div.'+position+'-panel');
+        panel.css({'display':'block'});
+        if(position == 'top' || position == 'bottom'){
+            panel.animate({'height': percent+'%'}, 200, () => {
+                $('body').css({'position':'fixed', 'left': 0, 'right': 0});
+            });
+        }else{
+            panel.animate({'width': percent+'%'}, 200, () => {
+                $('body').css({'position':'fixed', 'left': 0, 'right': 0});
+            });
+        }
+        var mask_percent = 100-percent;
+
+        if(mask_percent > 0){
+            var mask = $('div#'+maskPosition(position)+'-mask');
+
+            mask.css({'display':'block'});
+            if(position == 'top' || position == 'bottom'){
+                mask.animate({'height': mask_percent+'%'}, 200);
+            }else{
+
+                mask.animate({'width': mask_percent+'%'}, 200);
+            }
+            
+        }
+    }
+
+    function hideSlidePanel(position){
+        var panel = $('div.'+position+'-panel');
+        var mask = $('div#'+maskPosition(position)+'-mask');
+        if(position == 'top' || position == 'bottom'){
+            panel.animate({'height': 0}, 200, function(){
+                panel.css('display', 'none');
+                $('body').css('position', 'inherit');
+            });
+            mask.animate({'height': 0}, 200, function(){
+                mask.css({'display':'none'});
+            });
+        }else{
+            panel.animate({'width': 0}, 200, function(){
+                panel.css('display', 'none');
+                $('body').css('position', 'inherit');
+            });
+            mask.animate({'width': 0}, 200, function(){
+                mask.css({'display':'none'});
+            });
+        }
+        
+    }
+
+    function maskPosition(position){
+        switch(position){
+            case 'bottom': return 'top'; break;
+            case 'top': return 'bottom'; break;
+            case 'left': return 'right'; break;
+            case 'right': return 'left'; break;
+            default: return ''; break;
+        }
+
+
+    }
+
+    function valueEmpty(value){ // 值不存在
+        if(value == '' || value == undefined || value == null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

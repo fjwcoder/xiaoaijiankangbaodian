@@ -1,0 +1,110 @@
+<style>
+    .layui-nav-bar{display: none;}
+    .layui-nav-top{
+        position: fixed; left: 0; right: 0; top: 0; width: 100%;
+    }
+    .layui-nav-top .layui-nav-item{
+        text-align: center;
+    }
+    .layui-nav-top .layui-nav-more{display: none;}
+    .layui-nav-item a:hover{
+        background: #FFC0CB!important; color: #fff;
+    }
+    .layui-nav-tree .layui-nav-child dd.layui-this, .layui-nav-tree .layui-nav-child dd.layui-this a, .layui-nav-tree .layui-this, .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover{
+        background: #FFC0CB!important;
+    }
+</style>
+<ul class="layui-nav layui-nav-top layui-nav-tree" lay-filter="test" style="background:#FFC0CB!important;">
+    <li class="layui-nav-item">
+        <a href="javascript:;" style="color: #fff;">{$category.name}</a>
+    </li>
+</ul>
+
+<style>
+    #main-container{
+        margin-top: 45px;
+    }
+    #LAY_article_list{
+        padding: 10px 20px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; height: 100%;
+        overflow: scroll; border: none;
+    }
+    #LAY_article_list .list-item{margin: 5px 0; border-bottom: 1px solid #f8f8f8; padding: 5px 0;}
+    #LAY_article_list .list-title{}
+    #LAY_article_list .list-desc{color: #999; overflow: hidden;}
+    #LAY_article_list .list-more{text-align: right;}
+    #LAY_article_list .list-more a{ color: #FFC0CB!important}
+    .article-cover-img{
+        height: 60px;  float: left; margin-right: 20px;
+        width: 60px;
+    }
+</style>
+
+<div id="main-container">
+    <ul class="flow-default" id="LAY_article_list">
+        <!-- <li class="list-item">
+                <img class="article-cover-img" src="http://xiaoai.fjwcoder.com/upload/picture/20190531/f4ffaf3e576356dc928b95e214ab318e.jpg">
+                <h3 class="list-title">文章名称</h3>
+                <p class="list-desc" >文章简述</p>
+                <p class="list-more">文章内容</p>
+        </li> -->
+
+    </ul>
+</div>
+
+<script>
+    const cid = {$cid};
+    const per_page = 20;
+    // const total_page = 
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['element', 'flow', 'layer'], function(){
+    var element = layui.element
+        ,layer = layui.layer
+        ,flow = layui.flow;
+
+
+        flow.load({
+            elem: '#LAY_article_list' //流加载容器
+            ,isAuto: true
+            ,isLazyimg: true
+            ,done: function(page, next){ //执行下一页的回调
+                var lis = [];
+                $.ajax({
+                    method: 'POST',
+                    url: '/article/getArticleList?page='+page,
+                    data: {cid: cid},
+                    success: function(res){
+                        // console.log(res);
+                        if(res.total <= 0){
+                            layer.msg('暂无该内容');
+                            next(lis.join(''), page < res.last_page);
+                            return false;
+                        }
+                        $.each(res.data, function(key, val){
+                            lis.push(getListHtml(val));
+                            // console.log(val);
+                        });
+                        next(lis.join(''), page < res.last_page);
+                    },
+                    error: function(e){
+                    
+                        layer.msg('通信错误');
+                        next(lis.join(''), page < 1);
+                    }
+                });
+
+            }
+        });
+
+    });
+
+    function getListHtml(data){
+        var html = '';
+            html += '<li class="list-item">';
+            html += '<img class="article-cover-img" src="__STATIC__/../upload/picture/'+data.cover_path+'">';
+            html += '<h3 class="list-title" style="font-size: 15px;">'+data.name+'</h3>';
+            html += '<p class="list-desc" style="font-size: 13px;">'+data.describe+'</p>';
+            html += '<p class="list-more" style="margin-top: 15px;"><a href="/article/details?cid='+cid+'&id='+data.id+'">查看文章</a></p>';
+            html += '</li>';
+        return html;
+    }
+</script>

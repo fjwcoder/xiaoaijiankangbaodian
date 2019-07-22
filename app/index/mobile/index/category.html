@@ -1,0 +1,106 @@
+<style>
+    .layui-nav-bar{display: none;}
+    .layui-nav-top{
+        position: fixed; left: 0; right: 0; top: 0; width: 100%;
+    }
+    .layui-nav-top .layui-nav-item{
+        text-align: center;
+    }
+    .layui-nav-top .layui-nav-more{display: none;}
+    .layui-nav-item a:hover{
+        background: #FFC0CB!important; color: #fff;
+    }
+</style>
+<ul class="layui-nav layui-nav-top layui-nav-tree" lay-filter="test" style="background:#FFC0CB!important;">
+    <li class="layui-nav-item">
+        <a href="javascript:;" style="color: #fff;">健康宝典</a>
+        <dl class="layui-nav-child">
+            {volist name="category_list" id="vo"}
+                <dd><a href="/index/category?cid={$vo.id}" style="color: #fff;">{$vo.name}</a></dd>
+            {/volist}
+        </dl>
+    </li>
+</ul>
+
+<style>
+    #main-container{
+        margin-top: 45px;
+    }
+    #LAY_article_list{
+        padding: 10px 20px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; height: 100%;
+        overflow: scroll; border: none;
+    }
+    #LAY_article_list .list-item{margin: 5px 0; border-bottom: 1px solid #f8f8f8; padding: 5px 0;}
+    #LAY_article_list .list-title{}
+    #LAY_article_list .list-desc{color: #999; overflow: hidden;}
+    #LAY_article_list .list-more{text-align: right;}
+    #LAY_article_list .list-more a{ color: #FFC0CB!important}
+</style>
+
+<div id="main-container">
+    <ul class="flow-default" id="LAY_article_list">
+        <!-- <div class="list-item">
+            <h3 class="list-title">文章名称</h3>
+            <p class="list-desc" >文章简述</p>
+            <p class="list-more">文章内容</p>
+        </div> -->
+
+    </ul>
+</div>
+
+<script>
+    const cid = {$cid};
+    const per_page = 20;
+    // const total_page = 
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['element', 'flow', 'layer'], function(){
+    var element = layui.element
+        ,layer = layui.layer
+        ,flow = layui.flow;
+
+
+        flow.load({
+            elem: '#LAY_article_list' //流加载容器
+            ,isAuto: true
+            ,isLazyimg: true
+            ,done: function(page, next){ //执行下一页的回调
+                var lis = [];
+                $.ajax({
+                    method: 'POST',
+                    url: '/index/getArticleList?page='+page,
+                    data: {cid: cid},
+                    success: function(res){
+                        // console.log(res);
+                        if(res.total <= 0){
+                            layer.msg('暂无该内容');
+                            next(lis.join(''), page < res.last_page);
+                            return false;
+                        }
+                        $.each(res.data, function(key, val){
+                            lis.push(getListHtml(val));
+                            // console.log(val);
+                        });
+                        next(lis.join(''), page < res.last_page);
+                    },
+                    error: function(e){
+                    
+                        layer.msg('通信错误');
+                        next(lis.join(''), page < 1);
+                    }
+                });
+
+            }
+        });
+
+    });
+
+    function getListHtml(data){
+        var html = '';
+            html += '<div class="list-item">';
+            html += '<h3 class="list-title" style="font-size: 15px;">'+data.name+'</h3>';
+            html += '<p class="list-desc" style="font-size: 13px;">'+data.describe+'</p>';
+            html += '<p class="list-more" style="margin-top: 15px;"><a href="/index/details?cid='+cid+'&id='+data.id+'">查看文章</a></p>';
+            html += '</div>';
+        return html;
+    }
+</script>

@@ -1,0 +1,72 @@
+<style>
+    .t_c{text-align: center}
+    .top-title{
+        position: fixed; top: 0; left: 0; width: 100%; height: 39px; background: #FFC0CB; color: #fff;
+        line-height: 39px; font-size: 18px; z-index: 9;
+        border-bottom: 1px solid #f8f8f8;
+    }
+        .pregnant-addinfo-top-div{
+            width: 100%; height: 220px; background: #FFC0CB; text-align: center;
+        }
+        img.headimgurl{margin: 20px auto; border-radius: 50%;}
+        .pregnant-addinfo-container{
+            width: 80%;
+        margin: -30px 5% 0 5%;
+        padding: 20px;
+        }
+        .pregnant-addinfo-container .layui-form-item{
+            margin: 10px 0;
+        }
+        .layui-form-select dl dd.layui-this, .layui-laydate .layui-this{
+            background-color: #FFC0CB!important;
+        color: #fff;
+        }
+        input.layui-input{
+            border: 0;
+        border-bottom: 1px solid #eee!important;
+        color: #666;
+        }
+    </style>
+
+    <style>
+        .kids-list-ul li{border-bottom: 1px solid #f8f8f8;}
+        .kids-list-ul p{padding: 5px; color: #666;}
+        .kids-list-ul .btn-p span{border: 1px solid #FFC0CB; color: #FFC0CB; border-radius: 30px; padding: 0 10px;}
+        .layui-icon-male, .layui-icon-female{color: #FFC0CB;}
+    </style>
+
+<div class="top-title t_c">
+        <!-- <a href="/kids/kidslist?openid={$openid}">
+            <span class="layui-icon layui-icon-return" style="    float: left;  margin-left: 15px;color: #fff;"></span>
+        </a> -->
+        宝宝之家
+    </div>
+    <ul class="kids-list-ul" style="padding: 20px;     margin-top: 45px;">
+        {volist name="list" id="vo"}
+            <li >
+                <p>姓名：{$vo.real_name} &nbsp;&nbsp;&nbsp;&nbsp;
+                    {switch $vo.sex}
+                        {case value="1"}<span class="layui-icon layui-icon-male"></span>{/case}
+                        {case value="2"}<span class="layui-icon layui-icon-female"></span>{/case}
+                        {default}未知
+                    {/switch}
+                </p>
+                <p>出生年月：{$vo.birthday}</p>
+                <p class="btn-p" style="text-align: right;">
+                    <a href="/kids/kidsinfo?openid={$openid}&kids_id={$vo.id}"><span>详情</span></a>
+                    <a href="/vaccine/kidsVaccineRemind?openid={$openid}&kids_id={$vo.id}"><span>疫苗</span></a>
+                    <a href="/kids/kidscheckremind?openid={$openid}&kids_id={$vo.id}"><span>体检</span></a>
+                </p>
+            </li>
+
+        {/volist}
+        <li style="    padding: 30px; text-align: center;">
+            <a href="/kids/addinfo?openid={$openid}">
+                <span class="layui-icon layui-icon-add-circle-fine" style="    font-size: 40px;
+                color: #FFC0CB;"></span><br>
+                <span style="color: #FFC0CB;">添加宝宝</span>
+            </a>
+            
+        </li>
+
+    </ul>

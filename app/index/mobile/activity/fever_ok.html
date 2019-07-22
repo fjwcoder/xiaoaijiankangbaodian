@@ -1,0 +1,89 @@
+<style>
+    #activity-container{
+        position: fixed; top: 0; bottom: 0; left: 0; right: 0; 
+        background-image: linear-gradient(to top,#40c057, #ebfbee);
+    }
+    .step-panel{
+        width: 100%; height: 50px; line-height: 50px; text-align: center; display: none;
+        margin: 10% 0 5% 0;
+    }
+    .step-panel-line{
+        height: 1px; width: 20%; background: #fff; display: inline-block;
+        margin-bottom: 5px;
+    }
+    .layui-icon-circle{  color: #fff;  }
+    .layui-icon-ok-circle{  color: #40c057;}
+
+/* #2f9e44 */
+</style>
+<div id="activity-container">
+    <div class="step-panel" {if $fever_click eq 0} style="display: block" {/if} >
+        <span class="layui-icon layui-icon-circle"></span>
+        <div class="step-panel-line"></div>
+        <span class="layui-icon layui-icon-circle"></span>
+        <div class="step-panel-line"></div>
+        <span class="layui-icon layui-icon-circle"></span>
+    </div>
+    <div class="step-panel" {if $fever_click eq 1} style="display: block" {/if} >
+        <span class="layui-icon layui-icon-ok-circle"></span>
+        <div class="step-panel-line" style="background-color: #40c057;"></div>
+        <span class="layui-icon layui-icon-circle"></span>
+        <div class="step-panel-line"></div>
+        <span class="layui-icon layui-icon-circle"></span>
+    </div>
+    <div class="step-panel" {if $fever_click eq 2} style="display: block" {/if} >
+        <span class="layui-icon layui-icon-ok-circle"></span>
+        <div class="step-panel-line" style="background-color: #40c057;"></div>
+        <span class="layui-icon layui-icon-ok-circle"></span>
+        <div class="step-panel-line" style="background-color: #40c057;"></div>
+        <span class="layui-icon layui-icon-circle"></span>
+    </div>
+    <div class="step-panel" {if $fever_click eq 3} style="display: block" {/if} >
+        <span class="layui-icon layui-icon-ok-circle"></span>
+        <div class="step-panel-line" style="background-color: #40c057;"></div>
+        <span class="layui-icon layui-icon-ok-circle"></span>
+        <div class="step-panel-line" style="background-color: #40c057;"></div>
+        <span class="layui-icon layui-icon-ok-circle"></span>
+    </div>
+
+    <style>
+        .main-title-panel{display: none; text-align: center;}
+        #gzh-qrcode{
+            width: 40%; margin: 20px 0;
+        }
+        #finish-button{
+            width: 40%; height: 40px; line-height: 40px;
+            border-radius: 5px; 
+            position: absolute; bottom: 40%; left: 30%;
+            border: 1px solid #fff; color: #fff;
+        }
+        .main-title-panel h3{
+            color: #40c057;
+        }
+
+    </style>
+
+    <div class="main-title-panel" {if $fever_click eq 0} style="display: block" {/if}>
+        尚未参加活动
+    </div>
+    <div class="main-title-panel" {if $fever_click eq 1} style="display: block" {/if}>
+        <h3>已关注第一个公众号</h3>
+        
+        <img id="gzh-qrcode" src="/static/module/index/mami.jpeg">
+
+        <p style="color: #fff;">请长按并识别二维码，继续关注公众号</p>
+    </div>
+    <div class="main-title-panel" {if $fever_click eq 2} style="display: block" {/if}>
+        <h3>已关注全部公众号</h3>
+        <p style="color: #fff;">请点击“确认领取”按钮</p>
+        <a href="/activity/finishFeverActivity">
+            <div id="finish-button" >确认领取</div>
+        </a>
+        
+    </div>
+    <div class="main-title-panel" {if $fever_click eq 3} style="display: block" {/if}>
+        <h3>已完成活动</h3>
+    </div>
+
+
+</div>

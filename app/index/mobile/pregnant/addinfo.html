@@ -1,0 +1,94 @@
+<style>
+    .pregnant-addinfo-top-div{
+        width: 100%; height: 260px; background: #FFC0CB; text-align: center;
+    }
+    img.headimgurl{margin: 20px auto; border-radius: 50%;}
+    .pregnant-addinfo-container{
+        width: 80%;
+    margin: -30px 5% 0 5%;
+    padding: 20px;
+    }
+    .pregnant-addinfo-container .layui-form-item{
+        margin: 10px 0;
+    }
+    .layui-form-select dl dd.layui-this, .layui-laydate .layui-this{
+        background-color: #FFC0CB!important;
+    color: #fff;
+    }
+    input.layui-input{
+        border: 0;
+    border-bottom: 1px solid #eee!important;
+    color: #666;
+    }
+</style>
+<div class="pregnant-addinfo pregnant-addinfo-top-div">
+        <!-- <a href="/pregnant/check?check_id=1">
+                <span style="        position: fixed;
+                right: 0;
+                margin: 20px;
+                color: #fff;
+                border: 1px solid #fff;
+                border-radius: 30px;
+                padding: 0px 8px;">查看文章</span>
+            </a> -->
+    <img class="headimgurl" src="{$user.headimgurl}">
+    <p style="text-align: center; font-size: 1.5rem; color: #fff;">{$user.nickname}</p>
+</div>
+<div class="layui-card pregnant-addinfo-container">
+    <form class="layui-form" action="/pregnant/saveUserInfo">
+        <input name="openid" type="hidden" value="{$user.wx_openid}" >
+        <div class="layui-form-item">
+            <input type="text" name="real_name" required  lay-verify="required" placeholder="请输入姓名"  autocomplete="off" class="layui-input">
+        </div>
+
+        <div class="layui-form-item">   
+            <input type="text" name="mobile" required  lay-verify="required" placeholder="请输入手机号码" autocomplete="off" value="{$user.mobile | default=''}" class="layui-input">  
+        </div>
+        <div  class="layui-form-item">
+            <input type="text" placeholder="请输入预产期" required class="layui-input" name="pre_birth" id="pre_birth">
+        </div>
+        <div  class="layui-form-item">
+                <input type="text" required placeholder="请输入孕妇生日" class="layui-input" name="birthday" id="birthday">
+            </div>
+        <div class="layui-form-item">  
+            <select name="sex" required lay-verify="required" disabled>
+                <!-- <option value="1" {if $user.sex eq 1}checked{/if}>男</option> -->
+                <option value="2" checked>女</option>
+            </select>
+        </div>
+        
+        <style>
+            .save-btn{background: #FFC0CB!important; border-color: #FFC0CB!important;
+                color: #fff; border-radius: 30px; width: 40%; margin: 0 30% -50px 30%;}
+        </style>
+        <button type="submit" class="layui-btn save-btn layui-btn-primary">
+            保  存
+        </button>
+    </form>
+
+    
+</div>
+
+<script>
+
+        //注意：导航 依赖 element 模块，否则无法进行功能性操作
+        layui.use(['form', 'layer', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,laydate = layui.laydate
+            
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#pre_birth' //指定元素
+        });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#birthday' //指定元素
+        });
+    
+
+            form.render();
+        });
+    
+
+</script>
