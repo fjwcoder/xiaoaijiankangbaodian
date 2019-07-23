@@ -33,6 +33,8 @@ class Index extends IndexBase
     // 首页
     public function index($cid = 0)
     {
+        // $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfcb19a60a1a9523f&redirect_uri=".urlencode('http://xiaoai.fjwcoder.com/index.php/wechat/mamilogin?c=activity&a=mamiSubscribeFeverActivity')."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+        // echo $url; die;
         return $this->redirect('index/category?cid='.$cid);
 
     }

@@ -69,20 +69,21 @@
     <div class="main-title-panel" {if $fever_click eq 1} style="display: block" {/if}>
         <h3>已关注第一个公众号</h3>
         
-        <img id="gzh-qrcode" src="/static/module/index/mami.jpeg">
+        <img id="gzh-qrcode" src="/static/module/index/{$gzh_name}.jpeg">
 
         <p style="color: #fff;">请长按并识别二维码，继续关注公众号</p>
     </div>
     <div class="main-title-panel" {if $fever_click eq 2} style="display: block" {/if}>
         <h3>已关注全部公众号</h3>
         <p style="color: #fff;">请点击“确认领取”按钮</p>
-        <a href="/activity/finishFeverActivity">
+        <a href="/activity/finishFeverActivity?aid={$activity_id}">
             <div id="finish-button" >确认领取</div>
         </a>
         
     </div>
     <div class="main-title-panel" {if $fever_click eq 3} style="display: block" {/if}>
-        <h3>已完成活动</h3>
+        <h3>活动完成</h3>
+        <p style="color: #fff;">奖品已领取</p>
     </div>
 
 

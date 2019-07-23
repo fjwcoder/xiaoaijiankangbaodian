@@ -28,12 +28,7 @@ class Wechat extends IndexBase
      */
     public function login(){
 
-        // $this->param = [
-        //     'c' =>'pregnant', 'a'=>'check', 'code'=>'001YhNuV0M9Iq12JP9yV0XkOuV0YhNui',
-        //     'state'=>1
-        // ];
         $res = $this->logicWechat->login($this->param);
-        // dump($res); die;
         return $this->redirect($res['url'], $res['param']);
     }
 
@@ -42,6 +37,15 @@ class Wechat extends IndexBase
      */
     public function menuDIY(){
         $this->logicWechat->menu($this->param);
+    }
+
+
+    /**
+     * 妈咪天使公众号网页授权
+     */
+    public function mamiLogin(){
+        $res = $this->logicWechat->mamiLogin($this->param);
+        return $this->redirect($res['url'], $res['param']);
     }
 
 }

@@ -67,4 +67,42 @@ class Wechat extends IndexBase
         // dump($param); die;
         return $this->serviceWechat->driverWxgzh->menu($param);
     }
+
+
+
+    /**
+     * 妈咪天使微信网页授权登录
+     */
+    public function mamiLogin($param = []){
+        // 1. 获取code
+        $wxcode = input('get.code', '', 'htmlspecialchars,trim');
+        if(empty($wxcode)){
+            return ['url'=>'index/errorPage', 'param'=>['content'=>'access error']]; 
+        }
+
+        // 2. 获取用户openid 和 access_token
+        $web_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxfcb19a60a1a9523f&secret=b7774caf8dc09fd2df721a2286f41bdc&code='.$wxcode.'&grant_type=authorization_code';
+        $open_res = httpsGet($web_url); //则本步骤中获取到网页授权access_token的同时，也获取到了openid，snsapi_base式的网页授权流程即到此为止。
+        $open_arr = json_decode($open_res, true);
+        if(!isset($open_arr['access_token']) || !isset($open_arr['openid'])){
+            return ['url'=>'index/errorPage', 'param'=>['content'=>'openid error']]; 
+            // return ['status'=>false, 'msg'=>'openid 获取失败'];
+        }
+        // 3. 获取用户的详细信息
+        $info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$open_arr['access_token'].'&openid='.$open_arr['openid'].'&lang=zh_CN';
+        $info_res = httpsGet($info_url);
+        $info_arr = json_decode($info_res, true);
+        // dump($info_arr); die;
+        if(isset($info_arr['openid']) && isset($info_arr['unionid']) && $info_arr['unionid'] != ''){
+            return ['url'=>'activity/mamiSubscribeFeverActivity', 'param'=>['unionid'=>$info_arr['unionid']]];
+        }else{
+            return ['url'=>'index/errorPage', 'param'=>['content'=>'userinfo error']]; 
+        }
+
+
+
+    }
+
+
+
 }

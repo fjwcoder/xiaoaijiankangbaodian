@@ -16,21 +16,22 @@ use think\Db;
  */
 class Activity extends IndexBase
 {
-    // private $remote_fever_activity = 'http://mami.fjwcoder.com/api.php/activity/unionidFeverActivity';
-    // private $remote_finish_activity = 'http://mami.fjwcoder.com/api.php/activity/finishedFeverActivity';
 
     /**
      * 关注领取退热贴活动
+     * 小爱健康平台
      */
     public function subscribeFeverActivity(){
 
         // 一、 处理用户信息数据
-        $user_id = user_is_login();
-        $openid = input('openid', '', 'htmlspecialchars,trim');
+        $user_id = 1; //user_is_login();
+        $openid = input('openid', 'o20RC1RcDMBYPdwPkfP9dCXkJz0g', 'htmlspecialchars,trim');
+
         if(empty($openid)){
             return $this->redirect('index/errorPage', ['content'=>'用户信息不存在，请重新关注公众号']);
         }
         $user = $this->logicWxUser->getWxUserInfo(['wx_openid'=>$openid, 'wx_id'=>$user_id]);
+// dump($user); die;
         if(isset($user['unionid']) && $user['unionid'] != ''){ // 判断unionid是否存在
             $unionid = $user['unionid'];
         }else{
@@ -40,21 +41,21 @@ class Activity extends IndexBase
         /**
          * 活动流程
          */
-        $fever_click = 0; // 活动点击次数 1 2 3
-        $activity = Db::name('fever_activity') -> where(['user_id'=>$user['user_id'], 'openid'=>$user['wx_openid'], 'unionid'=>$unionid]) -> find();
-        $response = $this->unionidFeverActivity($unionid);  // 1. 查询远端数据: 0 未完成；1 已完成；
-
-        $fever_click += intval($response['is_click']);
-
-        if(empty($activity)){ // 本公众号没有参加活动，可以直接参加
+        $this->assign('gzh_name', 'mami');
+        $this->assign('activity_id', 0);
+        $activity = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> find();
+        $this->assign('activity_id', isset($activity['id'])?$activity['id']:0);
+        if(empty($activity)){ 
+            // 1. 表中没有活动记录，直接参与
             $data = [
                 'user_id'=>$user_id, 'openid'=>$openid, 'unionid'=>$unionid,
-                'is_click'=>1, 'click_time'=>intval(time())
+                'xiaoai_click'=>1, 'xiaoai_click_time'=>intval(time())
             ];
             $insert = Db::name('fever_activity') -> insert($data);
             if($insert){
-                $fever_click += 1;
-                $this->assign('fever_click', $fever_click);
+
+                $this->assign('fever_click', 1);
+
                 return $this->fetch('fever_ok');
             }else{
                 return $this->redirect('index/errorPage', ['content'=>'参加活动失败，请重试']);
@@ -62,94 +63,185 @@ class Activity extends IndexBase
 
             
         }else{
-            if($activity['is_finished'] == 1 || $response['is_finished'] == 1){ // 已经完成了活动
-                $fever_click = 3; 
-                $this->assign('fever_click', $fever_click);
-                return $this->fetch('fever_ok');
-
-            }else{ // 参加了活动，但是还没有完成
-                $fever_click += 1;
-                $this->assign('fever_click', $fever_click);
-                return $this->fetch('fever_ok');
+            
+            // 2. 活动表中已存在活动记录
+            $deal = $this->dealTwoActivity($activity);
+            if($deal['click'] == 0){
+                $data = [
+                    'user_id'=>$user_id, 'openid'=>$openid, 
+                    'xiaoai_click'=>1, 'xiaoai_click_time'=>intval(time())
+                ];
+                $update = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> update($data);
+                if($update){
+                    $this->assign('fever_click', 1);
+                    
+                    return $this->fetch('fever_ok');
+                }else{
+                    return $this->redirect('index/errorPage', ['content'=>'参加活动失败，请重试']);
+                }
             }
+            if($deal['click'] == 1 && $activity['xiaoai_click'] == 0){
+                $data = [
+                    'user_id'=>$user_id, 'openid'=>$openid, 
+                    'xiaoai_click'=>1, 'xiaoai_click_time'=>intval(time())
+                ];
+                $update = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> update($data);
+                if($update){
+                    $this->assign('fever_click', 2);
+
+                    return $this->fetch('fever_ok');
+                }else{
+                    return $this->redirect('index/errorPage', ['content'=>'参加活动失败，请重试']);
+                }
+            }
+            // $this->assign('activity_id', $activity['id']);
+            $this->assign('fever_click', $deal['click']);
+            return $this->fetch('fever_ok');
+
+            
         }
 
     }
 
-    // 点击完成活动，领取到礼品
+//     // 点击完成活动，领取到礼品
     public function finishFeverActivity(){
         
-        $user_id = 1; //user_is_login();
-        if($user_id > 0){
-            $user = $this->logicWxUser->getWxUserInfo(['user_id'=>$user_id]);
-            $unionid = $user['unionid'];
-            // 1. 查询远端数据: 0 未完成；1 已完成；
-            $response = $this->unionidFeverActivity($unionid);
-// dump($response); die;
-            // 2. 在获取本地的
-            $activity = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> find();
+        $activity_id = input('aid', 0, 'intval');
 
-            $finish_status = $this->validateStatus($response, $activity);
-            // 3. 查询完成状态： true 参加了活动，但是没有修改状态  false 用户数据错误
-            if($finish_status['status'] == false){ 
-                return $this->redirect('index/errorPage', ['content'=>$finish_status['msg']]);
-            }else{
-                $finish_data = [
-                    'is_finished'=>1, 'finish_time'=>intval(time())
-                ];
-                // 4. 先修改远端状态
-                $remote = Db::connect(config('db_fever_activity'))->name('fever_activity') -> where(['unionid'=>$unionid]) ->update($finish_data);
-                // 5. 再修改本地状态
-                $local = Db::name('fever_activity') -> where(['unionid'=>$unionid]) ->update($finish_data);
+        $activity = Db::name('fever_activity') -> where(['id'=>$activity_id]) -> find();
+// dump($activity); die; 
+        if(empty($activity)){
+            return $this->redirect('index/errorPage', ['content'=>'活动记录不存在']);
+        }
+        $this->assign('gzh_name', 'none');
+        $this->assign('activity_id', 0);
 
-                if($remote || $local){ // 成功
+        $deal = $this->dealTwoActivity($activity);
+// dump($deal); die;
+        if($deal['click'] < 2){
+            return $this->redirect('index/errorPage', ['content'=>'尚未完成活动，不可领取']);
+        }
+        if($deal['click'] > 2){
+
+            return $this->redirect('index/errorPage', ['content'=>'不可重复领取奖品']);
+        }
+
+        $user_id = $activity['user_id'];
+        $user = $this->logicWxUser->getWxUserInfo(['user_id'=>$user_id]);
+        if($user){
+            $finish_data = [
+                'is_finished'=>1, 'finish_time'=>intval(time())
+            ];
+            $update = Db::name('fever_activity') -> where(['id'=>$activity_id, 'mami_click'=>1, 'xiaoai_click'=>1, 'is_finished'=>0]) -> update($finish_data);
+            if($update){
                     $this->assign('fever_click', 3);
+
                     return $this->fetch('fever_ok');
-                }else{
-                    return $this->redirect('index/errorPage', ['content'=>'用户数据错误，请重试']);
-                }
-
             }
-
         }else{
             return $this->redirect('index/errorPage', ['content'=>'用户信息错误，请重试']);
         }
+
+
+
+    }
+
+
+
+
+    /**
+     * create by fjw in 19.7.23
+     * 处理两个公众号的关注情况
+     * 
+     */
+    public function dealTwoActivity($activity){
+        $click = 0;
+        $gzh = [];
+        // dump($activity); die;
+        if($activity['xiaoai_click'] == 1){
+            $click += $activity['xiaoai_click'];
+            $gzh[] = 'xiaoai';
+        }
+        if($activity['mami_click'] == 1){
+            $click += $activity['mami_click'];
+            $gzh[] = 'mami';
+        }
+
+        $click += $activity['is_finished'];
+
+        return ['click'=>$click, 'data'=>$gzh];
         
     }
 
+
     /**
-     * 切换收据库
-     * 查询另一个数据库中的活动表
-     * 
-     */ 
-    private function unionidFeverActivity($unionid){
-        $user = Db::connect(config('db_fever_activity'))->name('wx_user')->where(['unionid'=>$unionid])->find();
-// dump($user); die;
-        if(empty($user)){
-            return ['is_click'=>0, 'is_finished'=>0];
-        }else{
-            // 用户存在的情况下，查询是否参加了活动
-            $activity = Db::connect(config('db_fever_activity'))->name('fever_activity') -> where(['unionid'=>$unionid]) -> find();
-            if($activity && $activity['is_click'] > 0){
-                return $activity;
-            }else{
-                return ['is_click'=>0, 'is_finished'=>0];
-            }
-        }
-    }
+     * =============以上是小爱平台的，下边是 妈咪天使平台的 ===============================================================================================================
+     */
+    public function mamiSubscribeFeverActivity(){
 
-    // 验证是否可以更改为已经完成
-    private function validateStatus($response, $activity){
-        if($response['is_click'] == 1  && $activity['is_click'] == 1 ){
-            if($response['is_finished'] == 0 && $response['is_finished'] == 0){
-                return ['status'=>true];
-            }else{
-                return ['status'=>false, 'msg'=>'已领取奖品，不可重复参加活动'];
-            }
-        }else{
-            return ['status'=>false, 'msg'=>'尚未关注全部公众号'];
-        }
+        $unionid = input('unionid', 'oPC1q6Aul52AWBud40-bxcoEhdRQ', 'htmlspecialchars,trim');
 
+        $this->assign('gzh_name', 'xiaoai');
+        
+        $activity = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> find();
+        $this->assign('activity_id', isset($activity['id'])?$activity['id']:0);
+        
+        if(empty($activity)){ 
+            // 1. 表中没有活动记录，直接参与
+            $data = [
+                'user_id'=>0, 'openid'=>'',
+                'unionid'=>$unionid,
+                'mami_click'=>1, 'mami_click_time'=>intval(time())
+            ];
+
+            $insert = Db::name('fever_activity') -> insert($data);
+            if($insert){
+
+                $this->assign('fever_click', 1);
+                
+                return $this->fetch('fever_ok');
+            }else{
+                return $this->redirect('index/errorPage', ['content'=>'参加活动失败，请重试']);
+            }
+
+            
+        }else{
+            
+            // 2. 活动表中已存在活动记录
+            $deal = $this->dealTwoActivity($activity);
+            if($deal['click'] == 0){
+                $data = [
+                    'mami_click'=>1, 'mami_click_time'=>intval(time())
+                ];
+                $update = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> update($data);
+                if($update){
+                    $this->assign('fever_click', 1);
+
+                    return $this->fetch('fever_ok');
+                }else{
+                    return $this->redirect('index/errorPage', ['content'=>'参加活动失败，请重试']);
+                }
+            }
+            if($deal['click'] == 1 && $activity['mami_click'] == 0){
+                $data = [
+                    'mami_click'=>1, 'mami_click_time'=>intval(time())
+                ];
+                $update = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> update($data);
+                if($update){
+                    $this->assign('fever_click', 2);
+
+                    return $this->fetch('fever_ok');
+                }else{
+                    return $this->redirect('index/errorPage', ['content'=>'参加活动失败，请重试']);
+                }
+            }
+
+            // $this->assign('activity_id', $activity['id']);
+            $this->assign('fever_click', $deal['click']);
+            return $this->fetch('fever_ok');
+
+            
+        }
     }
 
     

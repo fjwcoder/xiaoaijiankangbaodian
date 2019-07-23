@@ -3,6 +3,6 @@
 /log
 /public/upload/file
 /public/upload/picture
-# /app/database.php
+/app/database.php
 *.sql
 *.txt

@@ -479,7 +479,7 @@ class Wechat{
         $murujiance_url = $redirect_url.'wechat/login?c=pregnant&a=breastmilkcheck';
 
         $fever_activity_url = $redirect_url.'wechat/login?c=activity&a=subscribeFeverActivity';
-
+        
         $menu = [
             'button'=>[
                 [
