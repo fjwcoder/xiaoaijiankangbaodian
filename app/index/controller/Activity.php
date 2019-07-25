@@ -24,18 +24,18 @@ class Activity extends IndexBase
     public function subscribeFeverActivity(){
 
         // 一、 处理用户信息数据
-        $user_id = 1; //user_is_login();
-        $openid = input('openid', 'o20RC1RcDMBYPdwPkfP9dCXkJz0g', 'htmlspecialchars,trim');
+        $user_id = user_is_login();
+        $openid = input('openid', '', 'htmlspecialchars,trim');
 
         if(empty($openid)){
-            return $this->redirect('index/errorPage', ['content'=>'用户信息不存在，请重新关注公众号']);
+            return $this->redirect('index/errorPage', ['content'=>'no user info, resubscribe please']);
         }
         $user = $this->logicWxUser->getWxUserInfo(['wx_openid'=>$openid, 'wx_id'=>$user_id]);
 // dump($user); die;
         if(isset($user['unionid']) && $user['unionid'] != ''){ // 判断unionid是否存在
             $unionid = $user['unionid'];
         }else{
-            return $this->redirect('index/errorPage', ['content'=>'用户信息不存在，请重新关注公众号']);
+            return $this->redirect('index/errorPage', ['content'=>'no user info, resubscribe please']);
         }
         
         /**
@@ -45,6 +45,9 @@ class Activity extends IndexBase
         $this->assign('activity_id', 0);
         $activity = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> find();
         $this->assign('activity_id', isset($activity['id'])?$activity['id']:0);
+
+        $this->assign('activity_info', $activity);
+
         if(empty($activity)){ 
             // 1. 表中没有活动记录，直接参与
             $data = [
@@ -109,6 +112,8 @@ class Activity extends IndexBase
         $activity_id = input('aid', 0, 'intval');
 
         $activity = Db::name('fever_activity') -> where(['id'=>$activity_id]) -> find();
+
+        $this->assign('activity_info', $activity);
 // dump($activity); die; 
         if(empty($activity)){
             return $this->redirect('index/errorPage', ['content'=>'活动记录不存在']);
@@ -186,6 +191,8 @@ class Activity extends IndexBase
         $activity = Db::name('fever_activity') -> where(['unionid'=>$unionid]) -> find();
         $this->assign('activity_id', isset($activity['id'])?$activity['id']:0);
         
+        $this->assign('activity_info', $activity);
+
         if(empty($activity)){ 
             // 1. 表中没有活动记录，直接参与
             $data = [
