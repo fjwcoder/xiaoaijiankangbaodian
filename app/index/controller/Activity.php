@@ -183,7 +183,8 @@ class Activity extends IndexBase
      * =============以上是小爱平台的，下边是 妈咪天使平台的 ===============================================================================================================
      */
     public function mamiSubscribeFeverActivity(){
-
+        // 冯 oPC1q6Aul52AWBud40-bxcoEhdRQ
+        // 王 oPC1q6Fh6Lm4tydL2LH5kE7t222o
         $unionid = input('unionid', 'oPC1q6Aul52AWBud40-bxcoEhdRQ', 'htmlspecialchars,trim');
 
         $this->assign('gzh_name', 'xiaoai');
