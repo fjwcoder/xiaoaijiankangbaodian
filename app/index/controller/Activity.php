@@ -139,9 +139,13 @@ class Activity extends IndexBase
             ];
             $update = Db::name('fever_activity') -> where(['id'=>$activity_id, 'mami_click'=>1, 'xiaoai_click'=>1, 'is_finished'=>0]) -> update($finish_data);
             if($update){
-                    $this->assign('fever_click', 3);
+                $activity['is_finished'] = 1;
+                $activity['finish_time'] = time();
+                
+                $this->assign('activity_info', $activity);
+                $this->assign('fever_click', 3);
 
-                    return $this->fetch('fever_ok');
+                return $this->fetch('fever_ok');
             }
         }else{
             return $this->redirect('index/errorPage', ['content'=>'用户信息错误，请重试']);
