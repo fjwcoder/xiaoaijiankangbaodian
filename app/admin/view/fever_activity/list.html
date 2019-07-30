@@ -1,0 +1,160 @@
+
+<div class="box">
+    <div class="box-header ">
+
+      <!-- <div class="box-tools ">
+          <div class="input-group layui-form input-group-sm search-form">
+                <div class="layui-inline" >
+                    <label class="layui-form-label">进度：</label>
+                    <div class="layui-input-inline" style="width: 100px; margin-top: 4px;">
+                        <select  name="order_step" lay-verify="required">
+                            <option value="0" selected>全部</option>
+                            <option value="1">未支付</option>
+                            <option value="2" >待分配</option>
+                            <option value="3">代练中</option>
+                            <option value="4">已完成</option>
+                            <option value="5">已评价</option>
+                        </select>
+                    </div>
+                </div>
+              
+              <div class="input-group-btn">
+                <button type="button" id="reloadTableBtn"  data-type="reload" class="btn btn-default"><i class="fa fa-search"></i>搜索</button>
+              </div>
+          </div>
+      </div> -->
+
+      <br/>
+    </div>
+
+    <style>      
+        .layui-table-cell { overflow: visible !important;   } 
+        input.layui-input{
+            height: 30px!important;
+        }
+        .layui-form-select{float: left; width: 190px;}
+        .order-assign-btn{margin: 4px 0;}
+        /* .layui-table-box{overflow: visible!important;}
+        .layui-table-body{overflow: visible!important;}
+        .table-responsive{overflow: visible!important;} */
+
+    </style>
+
+    <div class="box-body table-responsive" > 
+        <table class="layui-hide" id="test" lay-filter="info_test"></table>
+        <script type="text/html" id="barOrder">
+            <a class="layui-btn order-assign-btn layui-btn-xs" lay-event="checkInfo">查看详情</a>
+        </script>
+    </div>
+
+  </div>
+
+<script>
+
+    let splitWhere = {};
+    var recordObj = null; // table中记录的对象
+    // console.log(waiter);
+
+    layui.use(['table', 'util', 'form', 'layer', 'laypage'], function(){
+        var table = layui.table,
+        util = layui.util,
+        layer = layui.layer,
+        laypage = layui.laypage,
+        form = layui.form;
+        
+        table.render({
+            elem: '#test',
+            id: 'orderTable',
+            url:'/admin.php/Fever_activity/getActivity',
+            where: splitWhere,
+            toolbar: true, //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+            limit: 15,
+            cols: [[
+                {field:'user_id', align: 'center', width:100, title: '用户ID', sort: true},
+                {field:'nickname', align: 'center', width:150, title: '用户昵称'},
+                {field:'wx_openid', align: 'center', width:300, title: '微信openid'},
+                {field:'unionid', align: 'center', width:300, title: 'unionid'},
+                {align: 'center', width:200, title: '省市区',templet:function(d){
+                    return d.country +' '+ d.province +' '+ d.city;
+                }},
+                {field:'sex', align: 'center', width:100, title: '性别',templet:function(d){
+                    switch(d.sex){
+                        case 1: return '男'; break;
+                        case 2: return '女'; break;
+                        default: return '未知';
+                    }
+                }},
+                {field:'xiaoai_click', align: 'center', width:120, title: '小爱',templet:function(d){
+                    if(d.xiaoai_click == 1){ return '参加'; }
+                    else {return ''; }
+                }},
+                {field:'xiaoai_click_time', align: 'center', width:160, title: '参加时间' ,sort: true,templet:function(d){
+                    return util.toDateString(d.xiaoai_click_time * 1000);
+                }},
+                {field:'mami_click',align: 'center', width:160, title: '妈咪', templet:function(d){
+                    if(d.mami_click == 1){ return '参加'; }
+                    else {return ''; }
+                }},
+                {field:'mami_click_time', align: 'center', width:160, title: '点击时间',sort: true,templet:function(d){
+                    return util.toDateString(d.mami_click_time * 1000);
+                }},
+                {field:'is_finished',align: 'center', width:120, title: '是否完成', templet:function(d){
+                    if(d.is_finished == 1){ return '完成'; }
+                    else {return ''; }
+                }},
+                {field:'finish_time', width:160, title: '完成时间',sort: true,templet:function(d){
+                    return util.toDateString(d.finish_time * 1000);
+                }}
+                // ,{fixed: 'right', title: '操作', width: 200, align:'center', toolbar: '#barOrder'} //, fixed: 'right'
+            ]],
+
+            parseData: function(res){ //将原始数据解析成 table 组件所规定的数据
+                // console.log(res);
+                res.code = 0;
+                res.count = res.total;
+
+                form.render();
+            },
+            page: true,
+            done: function(){
+                form.render();
+            }
+        });
+
+        var active = {
+            reload: function(){
+                //执行重载
+                table.reload('orderTable', {
+                    where: splitWhere
+                });
+            }
+        };
+
+        // 搜索按钮
+        $('#reloadTableBtn').on('click', function(){
+            var type = $(this).data('type');
+            splitWhere.step = $('select[name="order_step"]').val();
+            active[type] ? active[type].call(this) : '';
+
+        });
+
+        //监听行工具事件
+        table.on('tool(info_test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            recordObj = obj;  
+            var data = obj.data //获得当前行数据
+            ,layEvent = obj.event; //获得 lay-event 对应的值
+            // console.log(obj);
+            layer.load();
+            if(layEvent === 'checkInfo'){
+                var o_id =  data.id;
+                var order_id =  data.order_id;
+                // console.log(o_id+"---"+order_id);
+                // window.location.href="getOrderDetail?o_id="+o_id+"&order_id="+order_id;
+
+            }
+            layer.closeAll('loading');
+        });
+        form.render();
+    });
+    
+</script>
