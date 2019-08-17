@@ -23,12 +23,51 @@ class Wechat extends IndexBase
     }
 
     /**
+     * 微信网页授权登录增强版
+     * add by fjw in 19.8.16
+     * 区别是跳转参数进行了数组合并
+     */
+    public function loginPlus($param = []){
+        // return ['url'=>'index/subscribePlease', 'param'=>['content'=>'请先关注公众号，小爱健康宝典']]; 
+        $user_id = user_is_login();
+        if($user_id > 0){
+            $user = $this->modelWxUser->getInfo(['user_id'=>$user_id]);
+
+        }else{
+            $wxcode = input('get.code', '', 'htmlspecialchars,trim');
+            if(empty($wxcode)){
+                return ['url'=>'index/errorPage', 'param'=>['content'=>'未获取到微信登录秘钥']]; 
+            }
+            $param['wxid'] = 5;
+            $response = $this->serviceWechat->driverWxgzh->webAuth(['wxid'=>$param['wxid'], 'code'=>$wxcode]);
+
+            if($response['status']){
+                $openid = $response['data']['wx_openid'];
+            }else{
+                return ['url'=>'index/subscribePlease', 'param'=>['content'=>'请先关注公众号，小爱健康宝典']]; 
+            }
+
+            // $openid = 'o20RC1RcDMBYPdwPkfP9dCXkJz0g';
+    
+            $user = $this->modelWxUser->getInfo(['wx_openid'=>$openid]);
+
+            $auth = ['user_id' => $user['user_id'], TIME_UT_NAME => TIME_NOW];
+
+            session('user_info', $user);
+            session('user_auth', $auth);
+            session('user_auth_sign', data_auth_sign($auth));
+        }
+        
+        // dump(['url'=> $param['c'].'/'.$param['a'], 'param'=>array_merge($param, ['openid'=>$user['wx_openid']])]); die;
+        return ['url'=> $param['c'].'/'.$param['a'], 'param'=>array_merge($param, ['openid'=>$user['wx_openid']])]; 
+    }
+
+    /**
      * 微信网页授权登录
      */
     public function login($param = []){
         $user_id = user_is_login();
-        // $redirect = ['controller'=>$param['c'], 'action'=>$param['a']];
-        if($user_id < 0){
+        if($user_id > 0){
             $user = $this->modelWxUser->getInfo(['user_id'=>$user_id]);
 
         }else{
@@ -59,7 +98,6 @@ class Wechat extends IndexBase
         
         
         return ['url'=> $param['c'].'/'.$param['a'], 'param'=>['openid'=>$user['wx_openid']]]; 
-        // return $this->redirect('/pregnant/check', ['openid'=>$user['wx_openid']]);
 
     }
 

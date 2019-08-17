@@ -1,0 +1,39 @@
+<style>
+    #main-container{
+        position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+        background: url(/static/assets/scan_qrcode_bg.jpg) no-repeat;
+        background-position: center;
+        background-size: 100% 100%;
+        margin: 0;
+        padding: 40% 0;
+    }
+
+</style>
+<div id="main-container" class="t_c layui-card">
+    
+    {if $return.status}
+        <div class="layui-card-header" style="color: #fff; font-size: 20px; width: 70%; margin: 0 auto; padding-bottom: 20px;">
+            当前第  &nbsp;&nbsp;
+            <strong style="font-size: 3rem;">{$return.self}</strong> 
+            &nbsp;&nbsp;
+            位
+        </div>
+        <div class="layui-card-body" style="font-size: 20px; color: #fff;">
+            共 &nbsp;{$return.total} &nbsp;位待接种
+        </div>
+    {else}
+        <div class="layui-card-body" style="font-size: 20px; color: #fff;">
+            <span class="layui-icon layui-icon-tips" style="font-size: 3rem; font-weight: 600; color: #fff;"></span>
+            <br><br>
+            {$return.msg}
+        </div>
+
+    {/if}
+    <div class="layui-card-body" style="font-size: 20px; color: #fff;">
+        <img style="height: 120px; width: 120px;" src="/static/module/index/xiaoai.jpeg">
+        <br>
+        <br>
+        关注公众号，获取更多健康信息
+    </div>
+
+</div>

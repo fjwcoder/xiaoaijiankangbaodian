@@ -221,7 +221,6 @@ function throw_response_exception($data = [], $type = 'json')
  */
 function get_access_token()
 {
-    // echo API_KEY.'<br>';
     return md5('RuiTongMamiV2' . date('Ymd') . API_KEY);
 }
 

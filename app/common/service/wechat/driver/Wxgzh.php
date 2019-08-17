@@ -84,6 +84,20 @@ class Wxgzh extends Wechat implements Driver
         
         
     }
+
+    /**
+     * 长连接转短链接
+     * add by fjw in 19.8.17
+     */
+    public function urlToShort($param){
+        
+        $wechat_config = $this->config();
+
+        $wechatObj = new wxgzh\Wechat($wechat_config);
+
+        return $wechatObj->urlToShort($param['url']);
+    }
+
     
     /**
      * 网页授权

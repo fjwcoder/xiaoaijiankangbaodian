@@ -10,7 +10,7 @@
 // +---------------------------------------------------------------------+
 
 namespace app\index\controller;
-
+use think\Db;
 /**
  * 前端首页控制器
  */
@@ -103,8 +103,9 @@ class Index extends IndexBase
      * 错误页面
      */
     public function errorPage(){
-
+        // dump( $this->param); die;
         $this->assign('content', $this->param['content']);
+
         return $this->fetch('public/error');
     }
 
@@ -116,6 +117,88 @@ class Index extends IndexBase
         $this->assign('content', $this->param['content']);
         return $this->fetch('public/success');
     }
+
+    /**
+     * 公众号二维码
+     */
+    public function subscribePlease(){
+
+        return $this->fetch('index/subscribe');
+    }
+
+
+
+    /**
+     * 模拟小票打印
+     */
+    public function imitateInjectQrcode($no='A123'){
+
+        // dump(get_access_token()); die;
+        $root = 'http://xiaoai.fjwcoder.com/';
+        $url = $root.'wechat/loginPlus?c=index&a=scanInjectQrcode&ts='.strtotime(date('Y-m-d', time())).'&uc=08:00:20:0A:8C:6E&no='.$no;
+
+        $wx_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3bfada96a932f9e1&redirect_uri='.urlencode($url).'&response_type=code&scope=snsapi_base&state=1#wechat_redirect';
+        
+        // dump(create_qrcode($wx_url)); die;
+        // return create_qrcode($wx_url);
+
+        $this->assign('qrcode', create_qrcode($wx_url));
+        return $this->fetch('imitate');
+        // $this->assign('', create_qrcode($url);
+    }
+
+    /**
+     * 扫描取号小票上的二维码，查看排队人数
+     * @param $ts 时间戳
+     * @param $unique_code
+     * @param $mac_address
+     * @param $number 小票上的号码
+     */
+    public function scanInjectQrcode(){
+
+        $openid = input('openid', '');
+        $timestamp = input('ts', '');
+        $unique_code = input('uc', '');
+        $number = input('no', '');
+
+
+        $today = date('Y-m-d H:i:s', $timestamp);
+
+        $queue = Db::name('inject_queue_list') 
+            -> where('unique_code="'.$unique_code.'" and status=1 and create_time > "'.$today.'"') 
+            ->order('id desc') ->limit(1) -> find();
+        
+        if(empty($queue) || !isset($queue['queue_list']) || empty($queue['queue_list'])){
+            // 队列为空
+            $return = ['status'=>false, 'msg'=>'等待队列不存在'];
+
+            $this->assign('return', $return);
+            return $this->fetch('scan_inject_qrcode');
+        }
+
+        $queues_list = json_decode($queue['queue_list'], true);
+
+
+        $pos = array_search($number, $queues_list);
+
+        if($pos && $pos > -1){
+            $return = [
+                'status'=>true,
+                'self'=>$pos + 1,
+                'before'=>$pos,
+                'total'=>count($queues_list)
+            ];
+            
+        }else{
+
+            $return = ['status'=>false, 'msg'=>'等待队列不存在'];
+        }
+
+        $this->assign('return', $return);
+        return $this->fetch('scan_inject_qrcode');
+
+    }
+
 
 
 }

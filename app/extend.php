@@ -225,8 +225,8 @@ function create_qrcode($data = '', $path = '', $ecc = 'H', $size = 10)
     $save_path = empty($path) ? PATH_UPLOAD . 'extend' . DS . 'qrcode' . DS : $path;
     
     include_once EXTEND_PATH . 'qrcode' . DS . 'qrlib.php';
-    
-    if (!file_exists($save_path)) { mkdir($save_path); }
+
+    if(!is_dir($save_path)) {mkdir ( "$save_path", 0777, true );}
     
     $filename = $save_path.'.png';
     

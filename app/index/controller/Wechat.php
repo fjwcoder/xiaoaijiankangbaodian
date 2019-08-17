@@ -33,6 +33,16 @@ class Wechat extends IndexBase
     }
 
     /**
+     * 微信网页授权登录增强版
+     */
+    public function loginPlus(){
+
+        $res = $this->logicWechat->loginPlus($this->param);
+        // dump($res['param']); die;
+        return $this->redirect($res['url'], $res['param']);
+    }
+
+    /**
      * 自定义菜单
      */
     public function menuDIY(){

@@ -360,6 +360,24 @@ class Wechat{
         
     // }
 
+    /**
+     * 长连接转短链接
+     */
+    public function urlToShort($url = ''){
+
+        $post_url = 'https://api.weixin.qq.com/cgi-bin/shorturl?access_token='.$this->access_token();
+
+        $data = [
+            'action'=>'long2short', 'long_url'=>$url
+        ];
+
+        $response = httpsPost($post_url, json_encode($data, 320));
+
+        $response = json_decode($response, true);
+
+        return $response;
+        
+    }
     
 
     /**
