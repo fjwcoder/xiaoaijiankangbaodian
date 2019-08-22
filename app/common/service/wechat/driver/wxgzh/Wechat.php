@@ -101,9 +101,71 @@ class Wechat{
 			echo "no user's post data";
 		}
     }
-    
+    /**
+     * ########################################################################
+     *  响应公众号 “文本消息” 方法 create by fjw in 19.8.22
+     * ########################################################################
+     */
+    public function handleText($object){
+        $keyword = trim($object->Content);
+        
+        
+        
+        // 获取素材
+        // $sucai_url = 'https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token='.$this->access_token();
+        // $post_data = [ 'type'=>'image', 'offset'=>0, 'count'=>20];
+        // $response = httpsPost($sucai_url, json_encode($post_data));
+        // file_put_contents('sucai.txt', var_export(json_decode($response, true), true));
 
-/**
+        $sucai_list = [
+            '01'=>'vsbHnq6O8lSsHqwHQAwRUjFUHjnJgTcyOy6__7fc8vA',
+            '02'=>'vsbHnq6O8lSsHqwHQAwRUq9OVZJK1l5tPLSNLF1kE8E', 
+            '03'=>'vsbHnq6O8lSsHqwHQAwRUnuSiHHTgJtXvouAYUAnomo',
+            '04'=>'vsbHnq6O8lSsHqwHQAwRUvZTBGELilg2p25x2U3UyfQ', 
+            '05'=>'vsbHnq6O8lSsHqwHQAwRUiTEPhlXIewCdrzAT74ZjDk', 
+            '06'=>'vsbHnq6O8lSsHqwHQAwRUuc2yqXmTC9442qonJSJWLc', 
+            '07'=>'vsbHnq6O8lSsHqwHQAwRUmR9UvtNAEZpnCg_uAGyJIM', 
+            '08'=>'vsbHnq6O8lSsHqwHQAwRUiVEIHmdx1SfatsQ-r8U0WE',
+            '09'=>'vsbHnq6O8lSsHqwHQAwRUnh6_H0wBWRppL-VPJBgbPg'
+        ];
+        $sucai_keys = array_keys($sucai_list);
+
+        if(in_array($keyword, $sucai_keys)){
+            $result = $this->transmitImage($object, $sucai_list[$keyword]);
+            return $result;
+        }
+
+        $result = $this->transmitText($object, "欢迎跟小爱一起互动~");
+        return $result;
+
+    }     
+    /**
+     * ########################################################################
+     *  回复图片消息 create by fjw in 18.5.30
+     * ########################################################################
+     */
+	private function transmitImage($object, $media_id){
+		if(!isset($object)){
+			return "error";
+		}
+		if(empty($media_id)){
+			return "error";
+		}
+		
+		$xmlTpl = "<xml>
+						<ToUserName><![CDATA[%s]]></ToUserName>
+						<FromUserName><![CDATA[%s]]></FromUserName>
+						<CreateTime>%s</CreateTime>
+						<MsgType><![CDATA[image]]></MsgType>
+						<Image>
+							<MediaId><![CDATA[%s]]></MediaId>
+						</Image>
+				</xml>";
+		$result = sprintf($xmlTpl, $object->FromUserName, $object->ToUserName, time(), $media_id);
+		return $result;
+	}
+
+    /**
      * ########################################################################
      *  响应公众号 “事件消息” 方法 create by fjw in 18.5.30
      * ########################################################################
@@ -535,7 +597,7 @@ class Wechat{
                         ],
                         [
                             'type'=>'view', 'name'=>'疫苗保险',
-                            'url'=> $redirect_url.'vaccine/insurance'
+                            'url'=> 'https://wechat-ins.taivexmhealth.com/yunbaoyi/tscheckcost?type=78&proId=27&pagetype=zsyimiao&channel=zsjkkj1564708691642zsjkkj647822&accesstype=1'
                         ],
                         [
                             'type'=>'view', 'name'=>'抗体检测',
