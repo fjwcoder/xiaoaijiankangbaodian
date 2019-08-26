@@ -118,10 +118,14 @@ class Wechat{
         // file_put_contents('sucai.txt', var_export(json_decode($response, true), true));
 
         $sucai_list = [
-            '01'=>'vsbHnq6O8lSsHqwHQAwRUjFUHjnJgTcyOy6__7fc8vA',
-            '02'=>'vsbHnq6O8lSsHqwHQAwRUq9OVZJK1l5tPLSNLF1kE8E', 
-            '03'=>'vsbHnq6O8lSsHqwHQAwRUnuSiHHTgJtXvouAYUAnomo',
-            '04'=>'vsbHnq6O8lSsHqwHQAwRUvZTBGELilg2p25x2U3UyfQ', 
+            '5558'=>'vsbHnq6O8lSsHqwHQAwRUjFUHjnJgTcyOy6__7fc8vA',
+            '7908'=>'vsbHnq6O8lSsHqwHQAwRUq9OVZJK1l5tPLSNLF1kE8E', 
+            '2245'=>'vsbHnq6O8lSsHqwHQAwRUnuSiHHTgJtXvouAYUAnomo',
+            '7051'=>'vsbHnq6O8lSsHqwHQAwRUvZTBGELilg2p25x2U3UyfQ', 
+            // '01'=>'vsbHnq6O8lSsHqwHQAwRUjFUHjnJgTcyOy6__7fc8vA',
+            // '02'=>'vsbHnq6O8lSsHqwHQAwRUq9OVZJK1l5tPLSNLF1kE8E', 
+            // '03'=>'vsbHnq6O8lSsHqwHQAwRUnuSiHHTgJtXvouAYUAnomo',
+            // '04'=>'vsbHnq6O8lSsHqwHQAwRUvZTBGELilg2p25x2U3UyfQ', 
             '05'=>'vsbHnq6O8lSsHqwHQAwRUiTEPhlXIewCdrzAT74ZjDk', 
             '06'=>'vsbHnq6O8lSsHqwHQAwRUuc2yqXmTC9442qonJSJWLc', 
             '07'=>'vsbHnq6O8lSsHqwHQAwRUmR9UvtNAEZpnCg_uAGyJIM', 
