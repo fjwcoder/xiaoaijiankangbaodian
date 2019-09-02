@@ -601,7 +601,7 @@ class Wechat{
                         ],
                         [
                             'type'=>'view', 'name'=>'疫苗保险',
-                            'url'=> 'https://wechat-ins.taivexmhealth.com/yunbaoyi/tscheckcost?type=78&proId=27&pagetype=zsyimiao&channel=zsjkkj1564708691642zsjkkj647822&accesstype=1'
+                            'url'=> 'https://wechat-ins.taivexmhealth.com/yunbaoyi/tscheckcost?type=78&proId=27&pagetype=zsyimiao&channel=zsjkkj1566876546451zsjkkj874970&accesstype=1'
                         ],
                         [
                             'type'=>'view', 'name'=>'抗体检测',
