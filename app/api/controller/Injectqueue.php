@@ -43,7 +43,7 @@ class Injectqueue extends ApiBase
         
         // if(!isset($param['no']) || empty($param['no'])) return [API_CODE_NAME => 40001, API_MSG_NAME => '队列号码不可为空'];
 
-        // $root = 'http://xiaoai.fjwcoder.com/';
+        // $root = 'http://xiaoai.mamitianshi.com/';
 
         // $url = $root.'wechat/loginPlus?c=index&a=scanInjectQrcode&ts='.strtotime(date('Y-m-d', time())).'&uc='.$param['uc'].'&no='.$param['no'];
         // dump($url); die;

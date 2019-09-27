@@ -12,7 +12,7 @@ class Wechat{
         'token'=>''
     );
     
-    private $siteroot = 'http://xiaoai.fjwcoder.com/index.php/';
+    private $siteroot = 'http://xiaoai.mamitianshi.com/index.php/';
 
     
     

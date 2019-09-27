@@ -33,7 +33,7 @@ class Index extends IndexBase
     // 首页
     public function index($cid = 0)
     {
-        // $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfcb19a60a1a9523f&redirect_uri=".urlencode('http://xiaoai.fjwcoder.com/index.php/wechat/mamilogin?c=activity&a=mamiSubscribeFeverActivity')."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+        // $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfcb19a60a1a9523f&redirect_uri=".urlencode('http://xiaoai.mamitianshi.com/index.php/wechat/mamilogin?c=activity&a=mamiSubscribeFeverActivity')."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
         // echo $url; die;
         return $this->redirect('index/category?cid='.$cid);
 
@@ -134,7 +134,7 @@ class Index extends IndexBase
     public function imitateInjectQrcode($no='A123'){
 
         // dump(get_access_token()); die;
-        $root = 'http://xiaoai.fjwcoder.com/';
+        $root = 'http://xiaoai.mamitianshi.com/';
         $url = $root.'wechat/loginPlus?c=index&a=scanInjectQrcode&ts='.strtotime(date('Y-m-d', time())).'&uc=08:00:20:0A:8C:6E&no='.$no;
 
         $wx_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3bfada96a932f9e1&redirect_uri='.urlencode($url).'&response_type=code&scope=snsapi_base&state=1#wechat_redirect';
