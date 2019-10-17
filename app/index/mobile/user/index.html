@@ -1,0 +1,192 @@
+<link rel="stylesheet" href="__STATIC__/module/index/user/css/mall.css" type="text/css" />
+<link rel="stylesheet" href="__STATIC__/module/common/layui-v2.4.5/layui/css/layui.css" type="text/css" />
+<script type="text/javascript" src="__STATIC__/module/common/layui-v2.4.5/layui/layui.js"></script>
+<style>
+    /**vip用户按钮*/
+    .btn-vip{
+        font-size:16px;
+        margin-top: 20px;
+    }
+    /**弹出层表单*/
+    .layui-form{margin: 20px;}
+    .layui-form-label{width: auto;padding: 9px 5px !important;}
+    .layui-input{
+        display: inline;
+        height: 38px;
+    }
+    .layui-input-block{margin-left: 60px !important;}
+    .input-w{width: 110px;}
+    .get-code{
+        float: right;
+        width: 120px;
+    }
+
+    .menu_list{margin-top: 20px;}
+
+</style>
+<!-- <body class="body_color_user"> -->
+    <div class="mall_main">
+        <div id="child_header">
+            <!-- <div class="goback"><a href="javascript:history.back(-1)"><i></i></a></div> -->
+            <div class="current_location" style="margin-left: 40%;"><span>用户中心</span></div>
+        </div>
+        <div class="wx_wrap">
+            <div>
+            <!-- <a href="###"> -->
+                <div class="person_top">
+                    <img class="top_bj" src="__STATIC__/module/index/user/images/top_bj.jpg">
+                    <div class="per_con">
+                        <div class="user_photo">
+                            <img src="{$user.headimgurl}">
+                            <span>{$user.nickname}</span>
+                        </div>
+                        <div class="name_right">
+                            <p class="p1">{$user.nickname}</p>
+                            {if condition="$user['is_vip'] == 0"}
+                            <div class="layui-btn layui-btn-sm btn-vip become-vip ">您还不是VIP，成为VIP</div>
+                            {else}
+                            <div class="layui-btn layui-btn-warm layui-btn-sm btn-vip">VIP用户</div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            <!-- </a> -->
+            </div>
+            <!-- <div class="my_menu">
+                <ul>
+                    <li class="li_list"><a href="#"><img src="__STATIC__/module/index/user/images/user_icon1.png"> <span>###</span></a></li>
+                    <li class="li_list"><a href="#"><img src="__STATIC__/module/index/user/images/user_icon2.png"> <span>###</span></a></li>
+                    <li class="li_list"><a href="#"><img src="__STATIC__/module/index/user/images/user_icon3.png"> <span>###</span></a></li>
+                </ul>
+            </div> -->
+
+
+            <ul class="menu_list"> 
+                {if condition="$user['is_vip'] == 2"}
+                <li class="tiao"><a href="{:url('pregnant/breastmilkcheck')}?openid={$user.wx_openid}" style="color:red;">你有一次免费母乳检测，点击使用</a></li>
+                {/if}
+                <li class="tiao"><a href="{:url('pregnant/breastmilkchecklist')}?openid={$user.wx_openid}">母乳检测记录</a></li>
+                <!-- <li class="tiao" ><a href="#">###</a></li>
+                <li class="tiao"><a href="#">###</a></li>
+                <li class="tiao"><a href="#">###</a></li>
+                <li class="tiao"><a href="#">###</a></li>
+                <li class="tiao"><a href="#">###</a></li>
+                <li class="tiao"><a href="#">###</a></li> -->
+            </ul>
+
+        </div>
+
+        <!-- <ul class="wx_nav">
+            <li><a href="#"><img src="images/nav_icon1.png"><span class="yellow">#</span></a></li>
+            <li><a href="#"><img src="images/nav_icon2.png"><span>#</span></a></li>
+            <li><a href="#"><img src="images/nav_icon3.png"><span>#</span></a></li>
+            <li><a href="#"><img src="images/nav_icon4.png"><span>#</span>
+                    <b>15</b></a></li>
+        </ul> -->
+    </div>
+</body>
+<script>
+
+    var userId = '{$user.wx_id}';
+
+    layui.use(['form', 'layer', 'jquery'], function(){
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery;
+        
+
+        $('.become-vip').on('click',function(){
+            
+            layer.open({
+                type: 1, 
+                title: '验证手机号',
+                // area: '350px',
+                maxWidth: '360px',
+                content: '<div class="layui-form"><div class="layui-form-item"><label class="layui-form-label">手机号</label><div class="layui-input-block"><input type="text" class="layui-input" name="mobile" placeholder="请输入手机号"></div></div><div class="layui-form-item"><label class="layui-form-label">验证码</label><div class="layui-input-block"><input type="text" class="layui-input input-w" name="code" placeholder="验证码"><button class="layui-btn get-code">获取验证码</button></div></div></div>',
+                btn: ['确定', '取消'],
+                yes: function(index, layero){
+                    var mobile = $('input[name="mobile"]').val();
+                    var code = $('input[name="code"]').val();
+                    if(mobile == null || mobile == ''){
+                        layer.msg('请先填写手机号');
+                        return false;
+                    }
+                    if(code == null || code == ''){
+                        layer.msg('请先填写验证码');
+                        return false;
+                    }
+                    data = {
+                        userId:userId,
+                        mobile:mobile,
+                        code:code
+                    };
+
+                    $.post('{:url("user/bindMobile")}', data, function(res){
+                        console.log(res)
+                        if(res.code == 200){
+                            layer.msg(res.msg);
+                            setTimeout(function () {
+                                layer.close(index);
+                                window.location.reload();
+                            }, 2000);
+                            
+                        }else{
+                            layer.msg(res.msg);
+                        }
+
+                    },'json');
+
+                    // console.log(data)
+                },
+                btn2: function(index, layero){
+                    layer.close(index);
+                }
+            });
+            
+
+        });
+
+        /**获取验证码*/
+        $(document).on('click', '.get-code', function(){
+            that = $(this);
+
+            var mobile = $('input[name="mobile"]').val();
+            // console.log(mobile)
+            if(mobile == null || mobile == ''){
+                layer.msg('请先填写手机号');
+                return false;
+            }
+            data = {
+                userId:userId,
+                mobile:mobile,
+            };
+
+            $.post('{:url("common/sendSms")}', data, function(res){
+                console.log(res)
+                if(res.code == 200){
+                    layer.msg(res.msg);
+                    that.addClass('layui-btn-disabled');
+                    that.attr('disabled',true);
+                    var _t = 60,/*倒计时时间*/
+                    _timer = setInterval(function() {
+                        _t--;
+                        that.text('重新获取'+_t+'秒');
+                        if(_t <= 0) {
+                            /*倒计时时间结束后 恢复默认*/
+                            clearInterval(_timer);
+                            that.removeClass('layui-btn-disabled').removeAttr('disabled').text('获取验证码');
+                        }
+                    },1000);
+                }else{
+                    layer.msg(res.msg);
+                }
+
+            },'json');
+
+        });
+
+
+    });
+
+
+</script>

@@ -1,0 +1,290 @@
+<style>
+.layui-form-select dl dd.layui-this, .layui-laydate .layui-this{
+        background-color: #FFC0CB!important;
+    color: #fff;
+    }
+
+    .layui-form-radio>i:hover, .layui-form-radioed>i{
+        color: #FFC0CB;
+    }
+    .layui-form-label{color: #666;}
+    .splid-label{
+        width: 100%; text-align: left; color: #FFC0CB;
+    }
+    .double-input-left{
+        width: 45%; float: left; margin-right: 5%;
+    }
+    .double-input-right{
+        width: 45%; float: right; margin-left: 5%;
+    }
+    .layui-form-switch{
+        margin-right: 10px;
+    margin-top: -5px;
+    width: 20px;
+    min-width: 20px;
+    height: 16px;
+
+    }
+    .layui-form-switch i{
+        width: 10px;
+    height: 10px;
+    }
+    .layui-form-onswitch{
+        border-color: #FFC0CB;
+    background-color: #FFC0CB;
+    }
+    
+</style>
+<style>
+        .save-btn{background: #FFC0CB!important; border-color: #FFC0CB!important;
+            color: #fff; border-radius: 30px; width: 60%; margin: 0 20% 50px 20%;}
+        .record-btn{
+            width: 40%; margin: 0 30%;
+            border-color: #FFC0CB!important; background: #fff;
+            color: #ffc0cb; border-radius: 30px;
+        }
+        .disabled{
+            border-color: #f8f8f8!important;
+        background: #f8f8f8!important;
+        color: #999!important;
+    }
+    </style>
+<div class="layui-card" style="margin-bottom: 60px;">
+    <div class="layui-card-header t_c" style="color: #FFC0CB; font-size: 1.2rem;">检测报名详情</div>
+    <div class="layui-card-body">
+        <!-- <form class="layui-form"> -->
+
+        <!-- 宝妈基本信息 -->
+        <div class="layui-form-item">
+            <label class="layui-form-label splid-label">宝妈基本信息</label>
+        </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否支付</label>
+                <div class="layui-input-inline">
+                    {if condition="$info['is_pay'] == 1"}
+                    <input type="text" name="is_pay" class="layui-input" value="已支付" disabled>
+                    {else}
+                    <input type="text" name="is_pay" class="layui-input" value="已支付" disabled>
+                    {/if}
+                </div>
+            </div>
+
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">宝妈姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="mather_name" class="layui-input" disabled value="{$info.mather_name}">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">宝妈年龄</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="mather_age" class="layui-input" disabled value="{$info.mather_age}">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">怀孕次数(g)</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="g" class="layui-input" disabled value="{$info.g}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">分娩次数(p)</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="p" class="layui-input" disabled value="{$info.p}">
+                </div>
+                
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">产后时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="after_birth_month" class="layui-input double-input-left" disabled value="{$info.after_birth_month}">
+                    <input type="text" name="after_birth_day" class="layui-input double-input-right" disabled value="{$info.after_birth_day}">
+                </div>
+                
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">宝妈身份证</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="id_card" class="layui-input" disabled value="{$info.id_card}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="mobile" class="layui-input" disabled value="{$info.mobile}">
+                </div>
+            </div>
+
+            <!-- <div class="layui-form-item" style="display: none;">
+                <label class="layui-form-label">宝妈过敏史</label>
+                <div class="layui-input-block">
+                    {if condition="$info['mather_allergy'] == 1"}
+                    <input type="text" name="mather_allergy" class="layui-input" value="有" disabled>
+                    {else}
+                    <input type="text" name="mather_allergy" class="layui-input" value="无" disabled>
+                    {/if}
+                </div>
+            </div> -->
+
+        <!-- 宝宝基本信息 -->
+        <div class="layui-form-item">
+            <label class="layui-form-label splid-label">宝宝基本信息</label>
+        </div>
+
+            <div  class="layui-form-item">
+                <label class="layui-form-label">分娩日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" value="{$info.baby_birthday}" name="baby_birthday" disabled>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">胎龄</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="gestational_age_week" class="layui-input double-input-left" value="{$info.gestational_age_week}" disabled>
+                    
+                    <input type="text" name="gestational_age_day" class="layui-input double-input-right" value="{$info.gestational_age_day}" disabled>
+                </div>
+            </div>
+
+
+            <!-- 宝宝民族 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">宝宝民族</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" value="{$info.baby_nation}" name="baby_nation" disabled>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">宝宝姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="baby_name" class="layui-input" value="{$info.baby_name}" disabled>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">宝宝性别</label>
+                <div class="layui-input-block">
+                    {if condition="$info['baby_sex'] == 1"}
+                    <input type="text" name="baby_sex" class="layui-input" value="男" disabled>
+                    {else}
+                    <input type="text" name="baby_sex" class="layui-input" value="女" disabled>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">身高(cm)</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="baby_birth_height" placeholder="出生身高" class="layui-input double-input-left" value="{$info.baby_birth_height}" disabled>
+                    <input type="text" name="baby_now_height" placeholder="现在身高" class="layui-input double-input-right" value="{$info.baby_now_height}" disabled>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">体重(kg)</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="baby_birth_weight" placeholder="出生体重" class="layui-input double-input-left" value="{$info.baby_birth_weight}" disabled>
+                    <input type="text" name="baby_now_weight" placeholder="现在体重" class="layui-input double-input-right" value="{$info.baby_now_weight}" disabled>
+                </div>
+            </div>
+                
+            <div class="layui-form-item">
+                <label class="layui-form-label">头围(cm)</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="baby_birth_head" placeholder="出生头围" class="layui-input double-input-left" value="{$info.baby_birth_head}" disabled>
+                    <input type="text" name="baby_now_head" placeholder="现在头围" class="layui-input double-input-right" value="{$info.baby_now_head}" disabled>
+                </div>
+            </div>
+
+            <!-- <div class="layui-form-item" style="display: none;">
+                <label class="layui-form-label">宝宝过敏史</label>
+                <div class="layui-input-block">
+                    {if condition="$info['baby_allergy'] == 1"}
+                    <input type="text" name="baby_allergy" class="layui-input" value="有" disabled>
+                    {else}
+                    <input type="text" name="baby_allergy" class="layui-input" value="无" disabled>
+                    {/if}
+                </div>
+            </div> -->
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">详细地址</label>
+                <div class="layui-input-block">
+                    <textarea name="address" placeholder="报名“母乳检测”后，我们会电话联系您，请务必填写真实的详细信息" class="layui-textarea" disabled>{$info.address}</textarea>
+                </div>
+            </div>
+
+<!--             
+            <div class="layui-form-item">
+                <div class="layui-form-mid layui-word-aux">
+                    <input type="checkbox"  id="info-real-switch" lay-filter="switchTest" lay-skin="switch">
+                    <span id="info-real-content">
+                            信息真实性承诺：
+                            我承诺以上信息完全真实，本人愿意将母乳用于母乳成分检测，剩余母乳用于科研。
+                    </span>
+                    
+                </div>
+            </div>
+
+
+            <button type="submit" id="save-btn" disabled class="layui-btn save-btn layui-btn-primary disabled">
+                检测报名
+            </button> -->
+        <!-- </form> -->
+            
+        <a href="/pregnant/breastmilkchecklist?openid={$info.openid}">
+            <button type="button" class="layui-btn record-btn layui-btn-primary" >
+                报名记录
+            </button>
+        </a>
+            
+        
+    </div>
+    
+  </div>
+
+  <script>
+
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['form', 'layer', 'laydate'], function(){
+    var form = layui.form
+        ,layer = layui.layer
+        ,laydate = layui.laydate
+        
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#birth_day' //指定元素
+    });
+
+    form.on('switch(switchTest)', function(data){
+        var checked = data.elem.checked;
+        var btn = $('#save-btn');
+        if(checked){ // 选中
+            $('#info-real-content').css('color', '#FFC0CB');
+            btn.removeClass('disabled');
+            btn.attr("disabled",false); 
+            
+
+        }else{
+            $('#info-real-content').css('color', '#d2d2d2');
+            btn.addClass('disabled');
+            btn.attr("disabled",true); 
+        }
+
+
+
+    });
+
+
+        form.render();
+    });
+
+
+</script>

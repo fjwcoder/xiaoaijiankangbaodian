@@ -174,6 +174,26 @@ class Pregnant extends IndexBase
         return $this->fetch('pregnant/breastmilkchecklist');
     }
 
+    /**
+     * 查看母乳检测详情
+     * by fqm in 19.10.17
+     */
+    public function checkbreastmilkinfo()
+    {
+        $openid = input('openid', '', 'htmlspecialchars,trim');
+
+        // $user = $this->logicWxUser->getWxUserInfo(['wx_openid'=>$openid]);
+        if($openid == ''){
+            return $this->redirect('index/errorPage', ['content'=>'用户不存在，请关注微信公众号“小爱健康宝典”']);
+        }
+
+        $breastmilkinfo = $this->logicPregnant->checkbreastmilkinfo($this->param);
+
+        $this->assign('info',$breastmilkinfo);
+
+        return $this->fetch('pregnant/breastmilkinfo');
+
+    }
 
      /**
       * 母乳检测 end

@@ -12,7 +12,8 @@
 </style>
 <div class="layui-card">
     <div class="layui-card-header this-page-title t_c">
-            <a href="/pregnant/breastmilkcheck?openid={$openid}">
+            <!-- <a href="/pregnant/breastmilkcheck?openid={$openid}"> -->
+            <a href="javascript:history.back(-1)">
                 <span class="layui-icon layui-icon-return" style="float: left;  margin-left: 15px;color: #ffc0cb;"></span>
             </a>
 
@@ -22,7 +23,7 @@
         <table class="layui-table">
             <thead>
                 <tr>
-                    <th>宝妈</th><th>宝宝</th><th>时间</th>
+                    <th>宝妈</th><th>宝宝</th><th>时间</th><th>操作</th>
                 </tr> 
             </thead>
             <tbody>
@@ -31,6 +32,7 @@
                     <td>{$vo.mather_name}</td>
                     <td>{$vo.baby_name}</td>
                     <td>{$vo.create_time}</td>
+                    <td><a href="{:url('pregnant/checkbreastmilkinfo',['id'=>$vo['id'],'openid'=>$vo['openid']])}">查看详情</a></td>
                 </tr>
             {/volist}
             </tbody>

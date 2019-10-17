@@ -170,6 +170,15 @@ class Pregnant extends IndexBase
 
         ];
 
+        $wxUserInfo = $this->logicWxUser->getWxUserInfo(['wx_openid'=>$param['openid']]);
+
+        if($wxUserInfo['is_vip'] == 2){
+            $this->modelWxUser->updateInfo(['wx_openid'=>$param['openid']],['is_vip'=>1]);
+            $data['is_pay'] = 1;
+        }else{
+            $data['is_pay'] = 0;
+        }
+
         return $this->modelBreastMilk->setInfo($data);
     }
 
@@ -179,6 +188,15 @@ class Pregnant extends IndexBase
     public function breastmilkchecklist($param){
 
         return $this->modelBreastMilk->getList(['openid'=>$param['openid']], true, 'id desc', false);
+    }
+
+    /**
+     * 查看母乳检测详情
+     * by fqm in 19.10.17
+     */
+    public function checkbreastmilkinfo($param = [])
+    {
+        return $this->modelBreastMilk->getInfo(['id'=>$param['id'],'openid'=>$param['openid']]);
     }
 
 
