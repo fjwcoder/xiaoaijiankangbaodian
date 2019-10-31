@@ -25,23 +25,26 @@ class Injectqueue extends ApiBase
      */
     public function posInjectQueue($param){
 
+        // file_put_contents('posInjectQueue.txt', var_export($param, true));
+
         if(!isset($param['uc']) || empty($param['uc'])) return [API_CODE_NAME => 40001, API_MSG_NAME => '机器唯一编码不可为空'];
         
         if(!isset($param['ql']) || empty($param['ql'])) return [API_CODE_NAME => 40001, API_MSG_NAME => '接种点队列信息不可为空'];
         
-        if(!is_json($param['ql'])) return [API_CODE_NAME => 40003, API_MSG_NAME => '队列信息格式错误'];
+        // if(!is_json($param['ql'])) return [API_CODE_NAME => 40003, API_MSG_NAME => '队列信息格式错误'];
 
         $time = date('Y-m-d H:i:s', time());
+
         
         // 拼凑数据，进行插入操作
         $data = [
             'unique_code'=>$param['uc'],
-            'mac_address'=>isset($param['mac_address'])?$param['mac_address']:'',
+            'mac_address'=>isset($param['mac_address'])?$param['mac_address']:$param['uc'],
             'queue_list'=>$param['ql'],
             'create_time'=>$time,
             'status'=>1
         ];
-// dump($data); die;
+// return $data;
         $add = $this->modelInjectQueueList->setInfo($data);
 
         if($add){

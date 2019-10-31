@@ -92,7 +92,7 @@ class ApiBase extends LogicBase
             $access_token = isset($param['access_token'])?$param['access_token']:'';
         }
 
-        // add by fjw in 19.10.31: 增加不验证access_token的接口
+        // add by fjw in 19.10.31: 增加不验证access_token
         $uncheckAccessToken = [
             'injectqueue/posinjectqueue'
         ];
