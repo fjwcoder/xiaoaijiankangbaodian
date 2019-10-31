@@ -73,6 +73,7 @@ class ApiBase extends LogicBase
      */
     public function checkParam($param = [])
     {
+
         $info = $this->modelApi->getInfo(['api_url' => URL]);
 
         empty($info) && $this->apiError(CodeBase::$apiUrlError);
@@ -86,13 +87,20 @@ class ApiBase extends LogicBase
          * 
          * 
          */
-
         $access_token = isset($_SERVER['HTTP_ACCESS_TOKEN'])?$_SERVER['HTTP_ACCESS_TOKEN']:'';
         if(empty($access_token)){
             $access_token = isset($param['access_token'])?$param['access_token']:'';
         }
 
-        (empty($access_token) || $access_token != get_access_token()) && $this->apiError(CodeBase::$accessTokenError);
+        // add by fjw in 19.10.31: 增加不验证access_token的接口
+        $uncheckAccessToken = [
+            'injectqueue/posinjectqueue'
+        ];
+        if(!in_array(strtolower(URL), $uncheckAccessToken)){
+            (empty($access_token) || $access_token != get_access_token()) && $this->apiError(CodeBase::$accessTokenError);
+        }
+
+        
         
         if ($info['is_user_token'] && empty($param['user_token'])) {
             
