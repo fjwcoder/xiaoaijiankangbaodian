@@ -94,7 +94,8 @@ class ApiBase extends LogicBase
 
         // add by fjw in 19.10.31: 增加不验证access_token
         $uncheckAccessToken = [
-            'injectqueue/posinjectqueue'
+            'injectqueue/posinjectqueue',
+            'injectqueue/urltoshort'
         ];
         if(!in_array(strtolower(URL), $uncheckAccessToken)){
             (empty($access_token) || $access_token != get_access_token()) && $this->apiError(CodeBase::$accessTokenError);

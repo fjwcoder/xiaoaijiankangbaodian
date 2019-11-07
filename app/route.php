@@ -24,4 +24,6 @@ use think\Route;
 Route::rule([
 
     'positionInjectQueue'                   => '@api/Injectqueue/posInjectQueue',
+    'queueUrlToShort'                       => '@api/Injectqueue/urlToShort', // 返回打印小票二维码
+    
 ]);
